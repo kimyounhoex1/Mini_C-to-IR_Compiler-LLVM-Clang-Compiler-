@@ -26,7 +26,7 @@ Token Lexer::getNextToken() { // 이거 처음에 Token getNextToken() 이렇게
     if(is_space(c)){
       pos++;
       continue;
-    } 
+    }
     if('0'<=c && c<='9'){
       string num = "";
       while( pos < text.size() && (is_digit(text.at(pos)))){
