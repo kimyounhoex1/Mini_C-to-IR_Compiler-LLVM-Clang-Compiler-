@@ -6,25 +6,31 @@ enum class AstKind { Number, Binary };
 
 struct Ast {
   AstKind kind;
+  int line = 0;
+  int col = 0;
   virtual ~Ast() noexcept = default; // 뭔지 모르겠음
 };
 
 struct NumberAst : Ast {
   std::string value; // 숫자, 12, 34, 56 등등
-  NumberAst(std::string v){
+  NumberAst(std::string v, int L, int C){
     value = std::move(v);
     kind = AstKind::Number;
+    line = L;
+    col = C;
   }
 };
 
 struct BinaryAst : Ast {
   std::string op; // 연산자, +, -, * 등등
   std::unique_ptr<Ast> lhs, rhs;
-  BinaryAst(std::string o, std::unique_ptr<Ast> l, std::unique_ptr<Ast> r){
+  BinaryAst(std::string o, std::unique_ptr<Ast> l, std::unique_ptr<Ast> r, int L, int C){
     op = std::move(o);
     lhs = std::move(l);
     rhs = std::move(r);
     kind = AstKind::Binary;
+    line = L;
+    col = C;
   }
 
   ~BinaryAst() noexcept override = default;

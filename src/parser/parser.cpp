@@ -43,7 +43,7 @@ std::unique_ptr<Ast> Parser::parseExpr() {
     std::string op = cur.value;
     advance();
     auto rhs = parseTerm();
-    node = std::make_unique<BinaryAst>(op, std::move(node), std::move(rhs));
+    node = std::make_unique<BinaryAst>(op, std::move(node), std::move(rhs), cur.line, cur.col);
   }
 
   return node;
@@ -55,14 +55,14 @@ std::unique_ptr<Ast> Parser::parseTerm() {
     std::string op = cur.value;
     advance();
     auto rhs = parseFactor();
-    node = std::make_unique<BinaryAst>(op, std::move(node), std::move(rhs));
+    node = std::make_unique<BinaryAst>(op, std::move(node), std::move(rhs), cur.line, cur.col);
   }
   return node;
 }
 
 std::unique_ptr<Ast> Parser::parseFactor() {
   if(cur.type == TokenType::NUMBER) {
-    auto n = std::make_unique<NumberAst>(cur.value);
+    auto n = std::make_unique<NumberAst>(cur.value, cur.line, cur.col);
     advance();
     return n;
   }
@@ -77,17 +77,16 @@ std::unique_ptr<Ast> Parser::parseFactor() {
   throw perr("expected NUMBER or '('");
 }
 
-// ===== Utilities =====
 void printAst(const Ast* node, int indent) {
   auto pad = [indent](){ for (int i=0;i<indent;i++) std::cout << ' '; };
   if (!node) { pad(); std::cout << "(null)\n"; return; }
 
   if (node->kind == AstKind::Number) {
     auto* n = static_cast<const NumberAst*>(node);
-    pad(); std::cout << "Number(" << n->value << ")\n";
+    pad(); std::cout << "Number(" << n->value << "), line: " << n->line << ", col: " << n->col << "\n";
   } else if (node->kind == AstKind::Binary) {
     auto* b = static_cast<const BinaryAst*>(node);
-    pad(); std::cout << "Binary(" << b->op << ")\n";
+    pad(); std::cout << "Binary(" << b->op << "), line: " << b->line << ", col: " << b->col << "\n";
     printAst(b->lhs.get(), indent+2);
     printAst(b->rhs.get(), indent+2);
   }
@@ -104,6 +103,6 @@ long long eval(const Ast* node) {
   if (b->op == "+") return L + R;
   if (b->op == "-") return L - R;
   if (b->op == "*") return L * R;
-  if (b->op == "/") return L / R; // 정수 나눗셈
+  if (b->op == "/") return L / R;
   throw perr("unknown op in eval: " + b->op);
 }
