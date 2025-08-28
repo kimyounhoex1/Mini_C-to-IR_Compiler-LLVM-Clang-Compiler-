@@ -2,8 +2,12 @@
 #include <string>
 #include "../lexer/lexer.h"
 
-enum class AstKind { Number, Binary };
+// 숫자, 이진연산, 단항연산, 변수
+enum class AstKind { Number, Binary, Unary, Variable };
 
+enum class StmtKind { ExprStmt, AssignStmt };
+
+// Ast의 기본 생성자.
 struct Ast {
   AstKind kind;
   int line = 0;
@@ -11,6 +15,7 @@ struct Ast {
   virtual ~Ast() noexcept = default; // 뭔지 모르겠음
 };
 
+// 숫자의 경우는 자식 노드가 필요 x
 struct NumberAst : Ast {
   std::string value; // 숫자, 12, 34, 56 등등
   NumberAst(std::string v, int L, int C){
@@ -21,6 +26,7 @@ struct NumberAst : Ast {
   }
 };
 
+// 이항 연산은 자식노드가 2개 필요함
 struct BinaryAst : Ast {
   std::string op; // 연산자, +, -, * 등등
   std::unique_ptr<Ast> lhs, rhs;
@@ -35,11 +41,70 @@ struct BinaryAst : Ast {
 
   ~BinaryAst() noexcept override = default;
 };
+
+// 단항 연산은 자식노드가 1개 필요함
+struct UnaryAst : Ast{
+  std::string op; // +, - 등등
+  std::unique_ptr<Ast> expr;
+  UnaryAst(std::string o, std::unique_ptr<Ast> e, int L, int C) {
+    op = std::move(o);
+    expr = std::move(e);
+    kind = AstKind::Unary;
+    line = L;
+    col = C;
+  }
+};
   /* 위 코드의 개선된 코드
     BinaryAst(std::string o, std::unique_ptr<Ast> L, std::unique_ptr<Ast> R)
     : op(std::move(o)), lhs(std::move(L)), rhs(std::move(R)) { kind = AstKind::Binary; }
   */
 
+// 변수의 경우는 자식 노드가 필요 x
+struct VariableAst : Ast {
+  std::string name;
+  VariableAst(std::string n, int L, int C){
+    name = std::move(n);
+    kind = AstKind::Variable;
+    line = L;
+    col = C;
+  }
+};
+
+
+struct Stmt {
+  StmtKind kind;
+  int line = 0;
+  int col = 0;
+  virtual ~Stmt() noexcept = default;
+};
+
+struct ExprStmt : Stmt {
+  std::unique_ptr<Ast> expr;
+  ExprStmt(std::unique_ptr<Ast> e, int L, int C){
+    expr = std::move(e);
+    kind = StmtKind::ExprStmt;
+    line = L;
+    col = C;
+  }
+};
+
+struct Program {
+  std::vector<std::unique_ptr<Stmt>> stmts;
+};
+
+
+
+struct AssignStmt : Stmt {
+  std::string name;
+  std::unique_ptr<Ast> expr;
+  AssignStmt(std::string n, std::unique_ptr<Ast> e, int L, int C) {
+    name = std::move(n);
+    expr = std::move(e);
+    kind = StmtKind::AssignStmt;
+    line = L;
+    col = C;
+  }
+};
 
 class Parser {
   Lexer &lex;
@@ -57,6 +122,8 @@ public:
   explicit Parser(Lexer& L);
 
   std::unique_ptr<Ast> parse();
+  Program parserProgram();
+  std::unique_ptr<Stmt> parseStmt();
 };
 
 void printAst(const Ast* node, int indent = 0);

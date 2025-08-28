@@ -6,12 +6,23 @@
 #include "lexer.h"
 using namespace std;
 
+// 공백 처리 헬퍼 함수
 static bool is_space(char c){
     return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v';
 }
 
+// 숫자 처리 헬퍼 함수
 static bool is_digit(char c){
     return '0' <= c && c <= '9';
+}
+// 문자 처리 헬퍼 함수
+static bool is_alpha(char c){
+  return ('A' <= c && 'Z' <= c) || ('a' <= c && 'z' <= c) || c == '_';
+}
+
+// 숫자 + 문자 처리 헬퍼 함수
+Static bool is_alnum(char c) {
+  return is_digit(c) || is_alpha(c);
 }
 
 Lexer::Lexer(const string& input) {
@@ -41,7 +52,7 @@ Token Lexer::getNextToken() { // 이거 처음에 Token getNextToken() 이렇게
     int startLine = line;
     int startCol = col;
 
-    if('0'<=c && c<='9'){ 
+    if(is_digit(c)){ 
       string num;
       while( pos < text.size() && (is_digit(text.at(pos)))){
         // num = num + text.at(pos++);
@@ -50,6 +61,22 @@ Token Lexer::getNextToken() { // 이거 처음에 Token getNextToken() 이렇게
       return {TokenType::NUMBER, num, startLine, startCol};
     }
 
+    if(is_alpha(c)) {
+      std::string id;
+      while(pos < text.size() && (is_alnum(text.at(pos)))) {
+        id.push_back(advance());
+      }
+      return {TokenType::IDENT, id, L, C};
+    }
+
+    if(c == '='){
+      pos++;
+      return {TokenType::ASSIGN, "=", startLine, startCol};
+    }
+    if(c == ';'){
+      pos++;
+      return {TokenType::SEMI, ";", startLine, startCol};
+    }
     if(c == '+'){
       pos++;
       return {TokenType::PLUS, "+", startLine, startCol};

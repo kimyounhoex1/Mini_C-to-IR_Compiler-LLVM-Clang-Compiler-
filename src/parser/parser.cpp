@@ -61,7 +61,18 @@ std::unique_ptr<Ast> Parser::parseTerm() {
 }
 
 std::unique_ptr<Ast> Parser::parseFactor() {
+  cout << "여기 오닝? ";
+  if(cur.type == TokenType::MINUS || cur.type == TokenType::PLUS) {
+    cout << "저는 얘입니다." << cur.value << "\n";
+    std::string op = cur.value;
+    advance();
+    auto number = parseFactor();
+    auto node = std::make_unique<UnaryAst>(op, std::move(number), cur.line, cur.col);
+    return node;
+  }
+
   if(cur.type == TokenType::NUMBER) {
+    cout << "저는 얘입니다." << cur.value << "\n";
     auto n = std::make_unique<NumberAst>(cur.value, cur.line, cur.col);
     advance();
     return n;
@@ -73,7 +84,7 @@ std::unique_ptr<Ast> Parser::parseFactor() {
     expect(TokenType::RPAREN, "expected ')");
     return node;
   }
-
+  
   throw perr("expected NUMBER or '('");
 }
 
@@ -89,6 +100,10 @@ void printAst(const Ast* node, int indent) {
     pad(); std::cout << "Binary(" << b->op << "), line: " << b->line << ", col: " << b->col << "\n";
     printAst(b->lhs.get(), indent+2);
     printAst(b->rhs.get(), indent+2);
+  } else if (node->kind == AstKind::Unary) {
+    auto* u = static_cast<const UnaryAst*>(node);
+    pad(); std::cout << "Unary(" << u->op << ") @" << u->line << ":" << u->col << "\n";
+    printAst(u->expr.get(), indent + 2);
   }
 }
 
@@ -96,6 +111,13 @@ long long eval(const Ast* node) {
   if (node->kind == AstKind::Number) {
     const auto* n = static_cast<const NumberAst*>(node);
     return std::stoll(n->value);
+  }
+  if (node->kind == AstKind::Unary) {
+    const auto* u = static_cast<const UnaryAst*>(node);
+    long long v = eval(u->expr.get());
+    if (u->op == "+") return +v;
+    if (u->op == "-") return -v;
+    throw perr("unknown unary op: " + u->op);
   }
   const auto* b = static_cast<const BinaryAst*>(node);
   long long L = eval(b->lhs.get());
@@ -105,4 +127,5 @@ long long eval(const Ast* node) {
   if (b->op == "*") return L * R;
   if (b->op == "/") return L / R;
   throw perr("unknown op in eval: " + b->op);
+   
 }

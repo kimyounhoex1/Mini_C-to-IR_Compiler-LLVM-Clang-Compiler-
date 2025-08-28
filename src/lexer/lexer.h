@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 
-enum class TokenType { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, END };
+enum class TokenType { NUMBER, PLUS, MINUS, MUL, DIV, LPAREN, RPAREN, 
+  IDENT, ASSIGN, SEMI, // 변수, 할당(=), ;
+  END };
 
 struct Token {
   TokenType type;
