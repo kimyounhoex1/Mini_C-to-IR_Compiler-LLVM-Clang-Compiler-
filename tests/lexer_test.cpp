@@ -11,6 +11,7 @@ int main() {
     cout << "Token(" << t.value << ")\n";
   }
 }
+
 /*
 입력
  g++ -std=c++17 tests/lexer_test.cpp src/lexer/lexer.cpp -o lexer_test
@@ -26,4 +27,4 @@ Token(56)
 Token())
  *
  * 
-*/
+*/ 

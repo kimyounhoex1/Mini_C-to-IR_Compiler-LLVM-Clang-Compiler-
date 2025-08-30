@@ -122,9 +122,10 @@ public:
   explicit Parser(Lexer& L);
 
   std::unique_ptr<Ast> parse();
-  Program parserProgram();
+  Program parseProgram();
   std::unique_ptr<Stmt> parseStmt();
 };
 
 void printAst(const Ast* node, int indent = 0);
 long long eval(const Ast* node);
+void printProgram(const Program& p);

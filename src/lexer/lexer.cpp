@@ -3,7 +3,8 @@
 #include <vector>
 #include <cctype>
 #include <stdexcept>
-#include "lexer.h"
+#include "../include/lexer/lexer.h"
+
 using namespace std;
 
 // 공백 처리 헬퍼 함수
@@ -21,7 +22,7 @@ static bool is_alpha(char c){
 }
 
 // 숫자 + 문자 처리 헬퍼 함수
-Static bool is_alnum(char c) {
+static bool is_alnum(char c) {
   return is_digit(c) || is_alpha(c);
 }
 
@@ -66,7 +67,7 @@ Token Lexer::getNextToken() { // 이거 처음에 Token getNextToken() 이렇게
       while(pos < text.size() && (is_alnum(text.at(pos)))) {
         id.push_back(advance());
       }
-      return {TokenType::IDENT, id, L, C};
+      return {TokenType::IDENT, id, startLine, startCol};
     }
 
     if(c == '='){
