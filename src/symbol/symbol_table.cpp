@@ -1,4 +1,4 @@
-#include "symbol_table.h"
+#include "../../include/symbol/symbol_table.h"
 #include <string>
 #include <unordered_map>
 #include <vector>

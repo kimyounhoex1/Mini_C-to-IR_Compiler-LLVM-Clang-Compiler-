@@ -1,4 +1,4 @@
-#include "../src/symbol/symbol_table.h"
+#include "../include/symbol/symbol_table.h"
 #include <iostream>
 using namespace std;
 

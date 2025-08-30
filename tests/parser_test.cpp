@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
-#include "../src/lexer/lexer.h"
-#include "../src/parser/parser.h"
+#include "../include/lexer/lexer.h"
+#include "../include/parser/parser.h"
 
 int main() {
   std::string text1 = "(4+5)*(2-1)/3";

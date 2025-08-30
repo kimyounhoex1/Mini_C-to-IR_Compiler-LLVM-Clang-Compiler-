@@ -3,7 +3,7 @@
 #include <vector>
 #include <cctype>
 #include <stdexcept>
-#include "../include/lexer/lexer.h"
+#include "../../include/lexer/lexer.h"
 
 using namespace std;
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
-#include "../src/lexer/lexer.h"
-#include "../src/parser/parser.h"
+#include "../include/lexer/lexer.h"
+#include "../include/parser/parser.h"
 
 int main() {
   // 샘플 입력 (문장 여러 개)
