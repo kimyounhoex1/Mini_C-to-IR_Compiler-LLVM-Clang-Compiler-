@@ -1,3 +1,4 @@
+#pragma once
 #include "../ast/visitor.h"
 #include "../symbol/symbol_table.h"
 
