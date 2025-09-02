@@ -64,3 +64,43 @@ void SemanticAnalyzer::visit(BinaryOp& node) {
       std::cerr << "Error: 알 수 없는 연산자 '" << node.op << "'\n";
   }
 }
+
+void SemanticAnalyzer::visit(IfStmt& node) {
+  node.condition->accept(*this);
+  if(node.condition->getType() != "bool") {
+    std::cerr << "Type Error: if조건식은 bool타입이어야 한다.\n";
+  }
+  if(node.thenBranch) {
+    node.thenBranch->accept(*this);
+  }
+  if(node.elseBranch) {
+    node.elseBranch->accept(*this);
+  }
+}
+
+void SemanticAnalyzer::visit(WhileStmt& node) {
+  node.condition->accept(*this);
+  if(node.condition->getType() != "bool") {
+    std::cerr << "Type Error: while조건식은 bool타입이어야 한다.\n";
+  }
+  if(node.body) {
+    node.body->accept(*this);
+  }
+}
+
+void SemanticAnalyzer::visit(FunctionDecl& node) {
+  SymbolInfo info{node.returnType, 0, 0};
+  if(!symbols.declare(node.name, info)) {
+    std::cerr << "Error: 중복된 함수 선언 '" << node.name << "'\n";
+  }
+
+  symbols.enterScope();
+
+  for(auto& [paramName, paramType] : node.params) {
+    symbols.declare(paramName, SymbolInfo{paramType, 0, 0});
+  }
+  if(node.body){
+    node.body->accept(*this);
+  }
+  symbols.exitScope();
+}

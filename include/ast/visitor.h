@@ -13,4 +13,8 @@ public:
     virtual void visit(Number& node) = 0;
     virtual void visit(Boolean& node) = 0;
     virtual void visit(BinaryOp& node) = 0;
+
+    virtual void visit(IfStmt& node) = 0;
+    virtual void visit(WhileStmt& node) = 0;
+    virtual void visit(FunctionDecl& node) = 0;
 };

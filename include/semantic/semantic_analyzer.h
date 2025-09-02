@@ -13,5 +13,8 @@ public:
     void visit(Number& node) override;
     void visit(Boolean& node) override;
     void visit(BinaryOp& node) override;
+    void visit(IfStmt& node) override;
+    void visit(WhileStmt& node) override;
+    void visit(FunctionDecl& node) override;
     
 };

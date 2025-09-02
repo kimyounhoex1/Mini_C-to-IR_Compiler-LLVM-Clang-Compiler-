@@ -21,3 +21,12 @@ void Boolean::accept(Visitor& v) {
 void BinaryOp::accept(Visitor& v) {
   v.visit(*this);
 }
+void IfStmt::accept(Visitor& v) {
+  v.visit(*this);
+}
+void WhileStmt::accept(Visitor& v) {
+  v.visit(*this);
+}
+void FunctionDecl::accept(Visitor& v) {
+  v.visit(*this);
+}

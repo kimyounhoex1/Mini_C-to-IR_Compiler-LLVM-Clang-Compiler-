@@ -70,3 +70,44 @@ struct BinaryOp : AstNode {
     }
     void accept(Visitor& v) override;
 };
+
+struct IfStmt : AstNode {
+    AstNode* condition;
+    AstNode* thenBranch;
+    AstNode* elseBranch;
+
+    IfStmt(AstNode* cond, AstNode* thenB, AstNode* elseB = nullptr) {
+        condition = std::move(condition);
+        thenBranch = std::move(thenB);
+        elseBranch = std::move(elseB);
+    }
+    void accept(Visitor &v) override;
+};
+
+struct WhileStmt : AstNode {
+    AstNode* condition;
+    AstNode* body;
+
+    WhileStmt(AstNode* cond, AstNode* b) {
+        condition = std::move(cond);
+        body = std::move(b);
+    }
+    void accept(Visitor& v) override;
+};
+
+struct FunctionDecl : AstNode {
+    std::string name;
+    std::vector<std::pair<std::string, std::string>> params;
+    std::string returnType;
+    Block* body;
+
+    FunctionDecl(std::string n, std::vector<std::pair<std::string, std::string>> p,
+        std::string rt, Block* b){
+            name = std::move(n);
+            params = std::move(params);
+            returnType = std::move(rt);
+            body = std::move(b);
+        };
+    
+    void accept(Visitor& v) override;
+};
