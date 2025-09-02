@@ -32,3 +32,35 @@ void SemanticAnalyzer::visit(Block& node) {
   }
   symbols.exitScope();
 }
+
+void SemanticAnalyzer::visit(Number& node) {
+}
+
+void SemanticAnalyzer::visit(Boolean& node) {
+}
+
+void SemanticAnalyzer::visit(BinaryOp& node) {
+  node.lhs->accept(*this);
+  node.rhs->accept(*this);
+
+  std::string lt = node.lhs->getType();
+  std::string rt = node.rhs->getType();
+
+  if (node.op == "+" || node.op == "-" || node.op == "*") {
+    if (lt == "int" && rt == "int") {
+    } else {
+      std::cerr << "Type Error: 산술 연산 '" << node.op
+                << "'은 int 타입만 허용 ("
+                << lt << " " << node.op << " " << rt << ")\n";
+    }
+  } else if (node.op == "&&" || node.op == "||") {
+    if (lt == "bool" && rt == "bool") {
+    } else {
+      std::cerr << "Type Error: 논리 연산 '" << node.op
+                << "'은 bool 타입만 허용 ("
+                << lt << " " << node.op << " " << rt << ")\n";
+    }
+  } else {
+      std::cerr << "Error: 알 수 없는 연산자 '" << node.op << "'\n";
+  }
+}
