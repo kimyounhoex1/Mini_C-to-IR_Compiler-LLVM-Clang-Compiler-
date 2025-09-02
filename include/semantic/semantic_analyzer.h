@@ -10,4 +10,8 @@ public:
     void visit(Identifier& node) override;   // 사용 → lookup 검사
     void visit(Assign& node) override;       // 대입 → 좌변 선언 체크, RHS 순회
     void visit(Block& node) override;        // enterScope/exitScope
+    void visit(Number& node) override;
+    void visit(Boolean& node) override;
+    void visit(BinaryOp& node) override;
+    
 };

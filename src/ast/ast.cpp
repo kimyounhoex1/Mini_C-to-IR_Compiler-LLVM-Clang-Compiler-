@@ -12,3 +12,12 @@ void Assign::accept(Visitor& v) {
 void Block::accept(Visitor& v) {
   v.visit(*this);
 }
+void Number::accept(Visitor& v) {
+  v.visit(*this);
+}
+void Boolean::accept(Visitor& v) {
+  v.visit(*this);
+}
+void BinaryOp::accept(Visitor& v) {
+  v.visit(*this);
+}
